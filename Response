@@ -1,0 +1,53 @@
+response: The `DB.java` file contains several methods for connecting to a database, executing queries, and handling results. Here's a summary of how you can connect to a database and execute queries:
+
+1. **Connecting to the Database:**
+   - The method `conDB()` is used to establish a connection to the database. It uses connection strings defined in properties or XML files.
+   ```java
+   public static void conDB() throws ClassNotFoundException, SQLException {
+       try {
+           String db_connect_string = _properties.getProperty(HATF_properties.CONN_STR);
+           Class.forName(_properties.getProperty(HATF_properties.SQLJAVADriver));
+           conn = DriverManager.getConnection(db_connect_string);
+           HA.TestAutomation.Driver.getLogger().info("DB Connection Success");
+           stmt = conn.createStatement();
+       } catch (Exception e) {
+           e.printStackTrace();
+           Driver.getLogger().error(e);
+       }
+   }
+   ```
+
+2. **Executing a Query:**
+   - For executing queries, you can use the `QueryDB` or `exeDB` method. Here's how you can execute a query using `exeDB`:
+   ```java
+   public static void exeDB(String queryString) throws ClassNotFoundException, SQLException {
+       try {
+           conDB();
+           int rs = stmt.executeUpdate(queryString);
+           Driver.getLogger().info(rs);
+       } catch (Exception e) {
+           e.printStackTrace();
+           Driver.getLogger().error(e);
+       } finally {
+           stmt.close(); // Close the Statement
+       }
+   }
+   ```
+
+3. **Close Connections:**
+   - Remember to close all connections and statement objects to release resources.
+   ```java
+   public static void closeAll() {
+       try {
+           stmt.close();
+           conn.close();
+       } catch (SQLException e) {
+           e.printStackTrace();
+           Driver.getLogger().error(e);
+       }
+   }
+   ```
+
+To implement database connection handling, ensure the correct JDBC driver is available and your connection strings are properly configured in the properties or XML files mentioned in the code.
+
+This Java file is structured to handle SQL queries and database connection management efficiently, using exception handling and logging for troubleshooting.
